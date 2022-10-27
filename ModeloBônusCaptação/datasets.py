@@ -1,8 +1,10 @@
 import pandas as pd
-from classes import Get
 import numpy as np
 
-assessores = Get.assessores()
+path = r"Assessores leal_Pablo.xlsx"
+
+assessores = pd.read_excel(path)
+assessores['Código assessor'] = assessores['Código assessor'].astype(str)
 
 path = r'métricas_captação.xlsx'
 
