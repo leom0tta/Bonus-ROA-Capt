@@ -1,0 +1,5 @@
+classes==0.4.1
+numpy==1.22.4
+pandas==1.3.4
+plotly==5.4.0
+streamlit==1.12.2
