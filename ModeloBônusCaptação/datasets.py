@@ -1,7 +1,6 @@
 import pandas as pd
 import sys
 sys.path.insert (1, r'C:\Users\Leonardo\Dropbox\Fatorial\Inteligência\Codigos\Funções')
-from classes import Get
 import numpy as np
 
 assessores = Get.assessores()
