@@ -22,6 +22,8 @@ def app(average_df = average_df ):
     min_roa = col1.select_slider('Minimum ROA', range_roa*100, format_func= '{:,.2f} %'.format)/100
     capt_bonus = col3.select_slider('Bônus Captação', range_capt_bonus*100, format_func='{:,.2f} %'.format)/100
 
+    print(capt_bonus)
+
     num_beneficiados = average_df[str(min_roa.round(3))].sum()
     pagamento_em_bonus = sum(average_df[str(min_roa.round(3))] * average_df['Captação Líquida'] * 12 * capt_bonus)
 
@@ -46,7 +48,7 @@ def app(average_df = average_df ):
     price = get_price(average_df)
 
     mask_roa = price['Roa Min'] == round(min_roa,3)
-    mask_bonus = price['Bônus Capt'] == capt_bonus
+    mask_bonus = price['Bônus Capt'] == round(capt_bonus,3)
 
     left_df = price.loc[mask_roa , :]
     right_df = price.loc[mask_bonus , :]
