@@ -1,12 +1,12 @@
 import pandas as pd
+import sys
+sys.path.insert (1, r'C:\Users\Leonardo\Dropbox\Fatorial\Inteligência\Codigos\Funções')
+from classes import Get
 import numpy as np
 
-path = r"Assessores leal_Pablo.xlsx"
+assessores = Get.assessores()
 
-assessores = pd.read_excel(path)
-assessores['Código assessor'] = assessores['Código assessor'].astype(str)
-
-path = r'métricas_captação.xlsx'
+path = r'C:\Users\Leonardo\Dropbox\Fatorial\Inteligência\Codigos\ModeloBônusCaptação\BD\métricas_captação.xlsx'
 
 df = pd.read_excel(path, sheet_name='df')
 price = pd.read_excel(path, sheet_name='price')

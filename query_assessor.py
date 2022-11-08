@@ -8,6 +8,8 @@ def app(df=df):
     # Análise Individual por Assessor
     # ''')
 
+    print(df)
+
     assessor = st.selectbox('Selecione o assessor: ', assessores['Nome assessor'].drop_duplicates().sort_values(), index=0)
 
     df = df[df['Nome assessor'] == assessor]
@@ -21,12 +23,12 @@ def app(df=df):
     col1, col2, col3 = st.columns(3)
 
     col1.metric("Captação Mensal", 'R$ {:,.2f}'.format(average_capt))
-    col2.metric("Captação Anualizada", 'R$ {:,.2f}'.format(average_capt*12))
+    col2.metric("Projeção Anualizada da Captação", 'R$ {:,.2f}'.format(average_capt*12))
     col3.metric("% Captação Externa", '{:,.2f} %'.format(perc_capt_ext*100))
 
     col1.metric("Receita Mensal", 'R$ {:,.2f}'.format(average_fat))
-    col2.metric("Receita Anualizada", 'R$ {:,.2f}'.format(average_fat*12))
-    col3.metric("ROA", '{:,.2f} %'.format(average_ROA*100))
+    col2.metric("Projeção Anualizada da Receita", 'R$ {:,.2f}'.format(average_fat*12))
+    col3.metric("ROA Médio", '{:,.2f} %'.format(average_ROA*100))
 
     fig = make_subplots(rows=1, cols=2, specs=[[{"secondary_y": True}, {"secondary_y": True}]])
 

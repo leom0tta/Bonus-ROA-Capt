@@ -1,32 +1,52 @@
 import pandas as pd
 import streamlit as st
 import numpy as np
-from datasets import average_df, price
+from datasets import average_df, assessores
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 from range_capt import range_capt_bonus, range_roa
 
-def app():
+def app(average_df = average_df ):
 
     st.write('''
     # Análise e Simulações
     # ''')
 
-    col1, col2, col3 = st.columns([1,.1,1])
+    time = st.multiselect('Selecione o Time: ', assessores['Time'].drop_duplicates().sort_values())
+
+    col1, col2, col3 = st.columns([1,.1,1]) 
+
+    if time != []:
+        average_df = average_df.loc[ average_df['Time'].isin(time)]
 
     min_roa = col1.select_slider('Minimum ROA', range_roa*100, format_func= '{:,.2f} %'.format)/100
     capt_bonus = col3.select_slider('Bônus Captação', range_capt_bonus*100, format_func='{:,.2f} %'.format)/100
 
-    mask_roa = price['Roa Min'] == round(min_roa,3)
-    mask_bonus = price['Bônus Capt'] == capt_bonus
-
-    print('\n\n', price['Bônus Capt'], '\n\n')
-
-    num_beneficiados = price.loc[mask_roa & mask_bonus, 'Qtd. Beneficiados'].iloc[0]
-    pagamento_em_bonus = price.loc[mask_roa & mask_bonus, 'Preço'].iloc[0]
+    num_beneficiados = average_df[str(min_roa.round(3))].sum()
+    pagamento_em_bonus = sum(average_df[str(min_roa.round(3))] * average_df['Captação Líquida'] * 12 * capt_bonus)
 
     col3.metric("Pagamento anual em Bônus", 'R$ {:,.2f}'.format(pagamento_em_bonus))
     col1.metric("Total de Beneficiados", '{:,.0f} Assessores'.format(num_beneficiados))
+
+    @st.cache
+    def get_price(average_df):
+        price = []
+        for roa_min in range_roa:
+            price += [
+            [
+            roa_min, 
+            capt,
+            sum(12*average_df['Captação Líquida']*average_df[str(roa_min)]*capt), #captação anualizada
+            sum(average_df[str(roa_min)]) #assessores beneficiados
+            ] 
+            for capt in range_capt_bonus]
+
+        return pd.DataFrame(price, columns = ['Roa Min', 'Bônus Capt', 'Preço', 'Qtd. Beneficiados'])
+
+    price = get_price(average_df)
+
+    mask_roa = price['Roa Min'] == round(min_roa,3)
+    mask_bonus = price['Bônus Capt'] == capt_bonus
 
     left_df = price.loc[mask_roa , :]
     right_df = price.loc[mask_bonus , :]
@@ -63,7 +83,12 @@ def app():
     st.write(f'''
     ### Assessores Beneficiados com ROA mínimo = {'{:,.2f} %'.format(min_roa*100)}''')
 
-    st.write(average_df.loc[average_df[str(round(min_roa,3))]==1, ['Captação Líquida', 'ROA']])
+    display_df = average_df.loc[average_df[str(round(min_roa,3))]==1, ['Captação Líquida', 'ROA']]
+
+    display_df['Captação Líquida'] = display_df['Captação Líquida'].apply(lambda x: 'R$ {:,.2f}'.format(x))
+    display_df['ROA'] = display_df['ROA'].apply(lambda x: '{:,.3f} %'.format(x))
+
+    st.write(display_df)
 
 
 

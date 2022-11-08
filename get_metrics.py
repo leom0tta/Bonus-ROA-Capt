@@ -48,8 +48,9 @@ for roa_min in range_roa:
         
     price += [
         [
-        roa_min, capt,
-        sum(12*average_df['Captação Líquida']*average_df[str(roa_min)]*capt),
+        roa_min, 
+        capt,
+        sum(12*average_df['Captação Líquida']*average_df[str(roa_min)]*capt), #captação anualizada
         sum(average_df[str(roa_min)])
         ] 
         for capt in range_capt_bonus]
@@ -57,6 +58,8 @@ for roa_min in range_roa:
 price = pd.DataFrame(price, columns = ['Roa Min', 'Bônus Capt', 'Preço', 'Qtd. Beneficiados'])
 
 writer = pd.ExcelWriter('ModeloBônusCaptação\BD\métricas_captação.xlsx' , engine='xlsxwriter', datetime_format = 'dd/mm/yyyy')
+
+average_df = average_df.merge(assessores[['Nome assessor', 'Time']], how='left', on='Nome assessor')
 
 average_df.to_excel(writer, sheet_name = 'average_df', index=True)
 price.to_excel(writer, sheet_name='price', index=False)
