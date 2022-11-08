@@ -3,7 +3,7 @@ import numpy as np
 
 assessores = pd.read_excel('Assessores leal_Pablo.xlsx')
 
-path = r'C:\Users\Leonardo\Dropbox\Fatorial\Inteligência\Codigos\ModeloBônusCaptação\BD\métricas_captação.xlsx'
+path = r'métricas_captação.xlsx'
 
 df = pd.read_excel(path, sheet_name='df')
 price = pd.read_excel(path, sheet_name='price')
